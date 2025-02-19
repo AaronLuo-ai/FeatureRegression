@@ -10,7 +10,9 @@ from torchvision import datasets, transforms
 import nrrd
 import matplotlib.pyplot as plt
 from transform import *
-
+import  sys
+sys.path.append("..")
+from model_param.customized_ResNet import CustomResNet34Encoder
 
 class RegressionDataset(Dataset):
     def __init__(
@@ -55,29 +57,29 @@ class RegressionDataset(Dataset):
             match = new_df[new_df["patient_info"].apply(lambda x: x[0] == patient_id)]
             if not match.empty:
                 response = 1 if match.iloc[0]["patient_info"][1] == "Complete response" else 0
-                self.data.append((image_file, response))
-                print("type of image_file:", type(image_file), image_file)
-                print("type of response:", type(response), response)
+                image_path = self.root_dir / image_file
+
+                # Read the NRRD file once
+                image, _ = nrrd.read(image_path)  # Shape: (10, 320, 320)
+
+                # Process each slice and store them individually
+                for slice_idx in range(image.shape[0]):
+                    slice_array = image[slice_idx, :, :]  # Shape: (320, 320)
+                    slice_tensor = torch.from_numpy(slice_array.astype(np.float32)).unsqueeze(0)  # Shape: (1, 320, 320)
+
+                    self.data.append((slice_tensor, response))
 
     def __getitem__(self, index):
-        image_file, response = self.data[index]
-        image_path = self.root_dir / image_file
-
-        # Load image using nrrd
-        image, _ = nrrd.read(image_path)
-        image_tensor = torch.from_numpy(image.astype(np.float32)).unsqueeze(0)  # Add channel dim
-        print("image_tensor type: ", type(image_tensor))
-        print("image_tensor shape: ", image_tensor.shape)
-        # Apply transformations (if any)
+        slice_tensor, response = self.data[index]
         if self.transform:
-            image_tensor = self.transform(image_tensor)
-        print("image_tensor type after trasnform: ", type(image_tensor))
-        print("image_tensor shape after transform : ", image_tensor.shape)
-        # Extract features using encoder
-        with torch.no_grad():
-            features = self.encoder(image_tensor)
-
-        return features, torch.tensor(response, dtype=torch.float32)
+            slice_tensor = self.transform(slice_tensor)
+        print("shape of slice tensor: ", slice_tensor.shape)
+        # Features are extracted during DataLoader iteration, not in __init__
+        features_tensor = self.encoder(slice_tensor.unsqueeze(0))  # Add batch dimension: (1, 1, 128, 128)
+        features_tensor = torch.cat([f.view(-1) for f in features_tensor], dim=0)
+        print("features_tensor.shape: ",features_tensor.shape)
+        print("features_tensor type: ",type(features_tensor))
+        return features_tensor, torch.tensor(response, dtype=torch.float32)
 
     def __len__(self):
         return len(self.data)
@@ -89,7 +91,7 @@ def main():
     model = smp.Unet(encoder_name="resnet34", in_channels=1, classes=1)
     new_encoder = model.encoder
     new_encoder.load_state_dict(torch.load(model_path, weights_only=True))
-    new_encoder.eval()  # Set model to evaluation mode
+    new_encoder.eval()
     batch_size = 5
     dataset = RegressionDataset(encoder=new_encoder, phase="test", transform=image_transform)
     DataLoader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True)
@@ -98,12 +100,12 @@ def main():
         print("Features shape:", features.shape)  # Shape of features (batch_size, channels, H, W) or encoder output
         print("Targets:", targets)  # Binary targets (0 or 1)
 
-        # Visualize the first image in the batch (if features are still images)
-        plt.figure(figsize=(4, 4))
-        plt.imshow(features[0].squeeze().cpu().numpy(), cmap="gray")
-        plt.title(f"Target: {targets[0].item()}")
-        plt.axis("off")
-        plt.show()
+        # # Visualize the first image in the batch (if features are still images)
+        # plt.figure(figsize=(4, 4))
+        # plt.imshow(features[0].squeeze().cpu().numpy(), cmap="gray")
+        # plt.title(f"Target: {targets[0].item()}")
+        # plt.axis("off")
+        # plt.show()
 
         # Total number of batches
     print("\nTotal number of batches:", len(DataLoader))

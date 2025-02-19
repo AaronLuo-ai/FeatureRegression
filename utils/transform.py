@@ -1,11 +1,10 @@
-import random
-import torchvision.transforms.functional as F
-from torchvision.transforms import InterpolationMode
-from torchvision import transforms
-from torchvision.transforms.functional import InterpolationMode, adjust_brightness
-
-class EncoderTransform(transforms.Compose):
-    def __init__(self, size, interpolation=InterpolationMode.BILINEAR):
+import torchvision.transforms as transforms
+import torch
 
 
-    def __call__(self, *args, **kwargs):
+# Define the transform
+image_transform = transforms.Compose([
+    transforms.Resize((128, 128)),     # Resize to 128x128
+    transforms.ConvertImageDtype(torch.float32),  # Ensure float32 dtype
+    transforms.Normalize(mean=[0.0], std=[1.0])  # 0-1 normalization (identity transform)
+])

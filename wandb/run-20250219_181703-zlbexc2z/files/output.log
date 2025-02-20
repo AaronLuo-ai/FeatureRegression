@@ -1,0 +1,60 @@
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+IPU available: False, using: 0 IPUs
+HPU available: False, using: 0 HPUs
+You are using a CUDA device ('NVIDIA GeForce RTX 4090') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+
+  | Name   | Type   | Params
+----------------------------------
+0 | linear | Linear | 513
+----------------------------------
+513       Trainable params
+0         Non-trainable params
+513       Total params
+0.002     Total estimated model params size (MB)
+C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\pytorch_lightning\trainer\trainer.py:1609: PossibleUserWarning: The number of training batches (47) is smaller than the logging interval Trainer(log_every_n_steps=50). Set a lower value for log_every_n_steps if you want to see logs for the training epoch.
+  rank_zero_warn(
+Epoch 0: 100%|██████████| 65/65 [00:47<00:00,  1.38it/s, loss=2.12e+03, v_num=xc2z]
+C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\pl_bolts\models\regression\linear_regression.py:59: UserWarning: Using a target size (torch.Size([32])) that is different to the input size (torch.Size([32, 1])). This will likely lead to incorrect results due to broadcasting. Please ensure they have the same size.
+  loss = F.mse_loss(y_hat, y, reduction="sum")
+C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\pl_bolts\models\regression\linear_regression.py:59: UserWarning: Using a target size (torch.Size([10])) that is different to the input size (torch.Size([10, 1])). This will likely lead to incorrect results due to broadcasting. Please ensure they have the same size.
+  loss = F.mse_loss(y_hat, y, reduction="sum")
+                                                                        
+C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\pl_bolts\models\regression\linear_regression.py:81: UserWarning: Using a target size (torch.Size([32])) that is different to the input size (torch.Size([32, 1])). This will likely lead to incorrect results due to broadcasting. Please ensure they have the same size.
+  return {"val_loss": F.mse_loss(y_hat, y)}
+C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\pl_bolts\models\regression\linear_regression.py:81: UserWarning: Using a target size (torch.Size([31])) that is different to the input size (torch.Size([31, 1])). This will likely lead to incorrect results due to broadcasting. Please ensure they have the same size.
+  return {"val_loss": F.mse_loss(y_hat, y)}
+Traceback (most recent call last):
+  File "C:\Users\aaron.l\Documents\FeatureRegression\main.py", line 112, in <module>
+    main()
+  File "C:\Users\aaron.l\Documents\FeatureRegression\main.py", line 101, in main
+    trainer.fit(regression_model, TrainDataLoader, TestDataLoader)
+  File "C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\pytorch_lightning\trainer\trainer.py", line 608, in fit
+    call._call_and_handle_interrupt(
+  File "C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\pytorch_lightning\trainer\call.py", line 38, in _call_and_handle_interrupt
+    return trainer_fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\pytorch_lightning\trainer\trainer.py", line 650, in _fit_impl
+    self._run(model, ckpt_path=self.ckpt_path)
+  File "C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\pytorch_lightning\trainer\trainer.py", line 1112, in _run
+    results = self._run_stage()
+              ^^^^^^^^^^^^^^^^^
+  File "C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\pytorch_lightning\trainer\trainer.py", line 1191, in _run_stage
+    self._run_train()
+  File "C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\pytorch_lightning\trainer\trainer.py", line 1214, in _run_train
+    self.fit_loop.run()
+  File "C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\pytorch_lightning\loops\loop.py", line 200, in run
+    self.on_advance_end()
+  File "C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\pytorch_lightning\loops\fit_loop.py", line 295, in on_advance_end
+    self.trainer._call_callback_hooks("on_train_epoch_end")
+  File "C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\pytorch_lightning\trainer\trainer.py", line 1394, in _call_callback_hooks
+    fn(self, self.lightning_module, *args, **kwargs)
+  File "C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\pytorch_lightning\callbacks\early_stopping.py", line 184, in on_train_epoch_end
+    self._run_early_stopping_check(trainer)
+  File "C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\pytorch_lightning\callbacks\early_stopping.py", line 195, in _run_early_stopping_check
+    if trainer.fast_dev_run or not self._validate_condition_metric(  # disable early_stopping with fast_dev_run
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\pytorch_lightning\callbacks\early_stopping.py", line 150, in _validate_condition_metric
+    raise RuntimeError(error_msg)
+RuntimeError: Early stopping conditioned on metric `val_loss` which is not available. Pass in or modify your `EarlyStopping` callback to use any of the following: ``

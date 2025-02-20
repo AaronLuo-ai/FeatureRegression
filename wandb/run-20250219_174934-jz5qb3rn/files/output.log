@@ -1,0 +1,14 @@
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+HPU available: False, using: 0 HPUs
+Traceback (most recent call last):
+  File "C:\Users\aaron.l\Documents\FeatureRegression\main.py", line 84, in <module>
+    main()
+  File "C:\Users\aaron.l\Documents\FeatureRegression\main.py", line 73, in main
+    trainer.fit(regression_model, TrainDataLoader, TestDataLoader)
+  File "C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\pytorch_lightning\trainer\trainer.py", line 532, in fit
+    model = _maybe_unwrap_optimized(model)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\pytorch_lightning\utilities\compile.py", line 111, in _maybe_unwrap_optimized
+    raise TypeError(
+TypeError: `model` must be a `LightningModule` or `torch._dynamo.OptimizedModule`, got `LinearRegressionModel`

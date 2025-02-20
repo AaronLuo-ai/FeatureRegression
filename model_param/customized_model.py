@@ -33,15 +33,17 @@ class CustomResNet34Encoder(nn.Module):
         x = self.layer4(x)
 
         x = self.global_avg_pool(x)  # Shape: [batch_size, 512, 1, 1]
-        x = x.view(x.size(0), -1)    # Flatten to [batch_size, 512]
+        x = x.view(x.size(0), -1)  # Flatten to [batch_size, 512]
 
         return x
 
 
 class LinearRegressionModel(nn.Module):
-    def __init__(self):
+    def __init__(self, input_dim=512):
         super(LinearRegressionModel, self).__init__()
-        self.linear = nn.Linear(in_features=512, out_features=1)
+        self.linear = nn.Linear(
+            input_dim, 1
+        )  # Single layer with one output (regression)
 
     def forward(self, x):
         return self.linear(x)

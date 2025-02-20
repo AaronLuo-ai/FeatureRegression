@@ -1,0 +1,34 @@
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+IPU available: False, using: 0 IPUs
+HPU available: False, using: 0 HPUs
+You are using a CUDA device ('NVIDIA GeForce RTX 4090') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+
+  | Name   | Type   | Params
+----------------------------------
+0 | linear | Linear | 513
+----------------------------------
+513       Trainable params
+0         Non-trainable params
+513       Total params
+0.002     Total estimated model params size (MB)
+C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\pytorch_lightning\trainer\trainer.py:1609: PossibleUserWarning: The number of training batches (47) is smaller than the logging interval Trainer(log_every_n_steps=50). Set a lower value for log_every_n_steps if you want to see logs for the training epoch.
+  rank_zero_warn(
+Epoch 49: 100%|██████████| 65/65 [00:13<00:00,  4.88it/s, loss=49.9, v_num=cuer]   
+C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\pl_bolts\models\regression\linear_regression.py:59: UserWarning: Using a target size (torch.Size([32])) that is different to the input size (torch.Size([32, 1])). This will likely lead to incorrect results due to broadcasting. Please ensure they have the same size.
+  loss = F.mse_loss(y_hat, y, reduction="sum")
+C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\pl_bolts\models\regression\linear_regression.py:59: UserWarning: Using a target size (torch.Size([10])) that is different to the input size (torch.Size([10, 1])). This will likely lead to incorrect results due to broadcasting. Please ensure they have the same size.
+  loss = F.mse_loss(y_hat, y, reduction="sum")
+Testing DataLoader 0: 100%|██████████| 18/18 [00:03<00:00,  5.84it/s]    
+C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\pl_bolts\models\regression\linear_regression.py:81: UserWarning: Using a target size (torch.Size([32])) that is different to the input size (torch.Size([32, 1])). This will likely lead to incorrect results due to broadcasting. Please ensure they have the same size.
+  return {"val_loss": F.mse_loss(y_hat, y)}
+C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\pl_bolts\models\regression\linear_regression.py:81: UserWarning: Using a target size (torch.Size([31])) that is different to the input size (torch.Size([31, 1])). This will likely lead to incorrect results due to broadcasting. Please ensure they have the same size.
+  return {"val_loss": F.mse_loss(y_hat, y)}
+`Trainer.fit` stopped: `max_epochs=50` reached.
+You are using a CUDA device ('NVIDIA GeForce RTX 4090') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\pl_bolts\models\regression\linear_regression.py:92: UserWarning: Using a target size (torch.Size([32])) that is different to the input size (torch.Size([32, 1])). This will likely lead to incorrect results due to broadcasting. Please ensure they have the same size.
+  return {"test_loss": F.mse_loss(y_hat, y)}
+C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\pl_bolts\models\regression\linear_regression.py:92: UserWarning: Using a target size (torch.Size([31])) that is different to the input size (torch.Size([31, 1])). This will likely lead to incorrect results due to broadcasting. Please ensure they have the same size.
+  return {"test_loss": F.mse_loss(y_hat, y)}

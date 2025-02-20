@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "C:\Users\aaron.l\Documents\FeatureRegression\main.py", line 112, in <module>
+    main()
+  File "C:\Users\aaron.l\Documents\FeatureRegression\main.py", line 93, in main
+    callbacks=[early_stopping, checkpoint_callback],  # Pass callbacks here
+                               ^^^^^^^^^^^^^^^^^^^
+NameError: name 'checkpoint_callback' is not defined

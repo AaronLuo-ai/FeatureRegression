@@ -1,0 +1,95 @@
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+IPU available: False, using: 0 IPUs
+HPU available: False, using: 0 HPUs
+You are using a CUDA device ('NVIDIA GeForce RTX 4090') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+
+  | Name   | Type   | Params
+----------------------------------
+0 | linear | Linear | 513
+----------------------------------
+513       Trainable params
+0         Non-trainable params
+513       Total params
+0.002     Total estimated model params size (MB)
+C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\pytorch_lightning\trainer\trainer.py:1609: PossibleUserWarning: The number of training batches (47) is smaller than the logging interval Trainer(log_every_n_steps=50). Set a lower value for log_every_n_steps if you want to see logs for the training epoch.
+  rank_zero_warn(
+Epoch 0:   0%|          | 0/65 [00:00<?, ?it/s] 
+Traceback (most recent call last):
+  File "C:\Users\aaron.l\Documents\FeatureRegression\main.py", line 105, in <module>
+    main()
+  File "C:\Users\aaron.l\Documents\FeatureRegression\main.py", line 94, in main
+    trainer.fit(regression_model, TrainDataLoader, TestDataLoader)
+  File "C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\pytorch_lightning\trainer\trainer.py", line 608, in fit
+    call._call_and_handle_interrupt(
+  File "C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\pytorch_lightning\trainer\call.py", line 38, in _call_and_handle_interrupt
+    return trainer_fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\pytorch_lightning\trainer\trainer.py", line 650, in _fit_impl
+    self._run(model, ckpt_path=self.ckpt_path)
+  File "C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\pytorch_lightning\trainer\trainer.py", line 1112, in _run
+    results = self._run_stage()
+              ^^^^^^^^^^^^^^^^^
+  File "C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\pytorch_lightning\trainer\trainer.py", line 1191, in _run_stage
+    self._run_train()
+  File "C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\pytorch_lightning\trainer\trainer.py", line 1214, in _run_train
+    self.fit_loop.run()
+  File "C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\pytorch_lightning\loops\loop.py", line 199, in run
+    self.advance(*args, **kwargs)
+  File "C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\pytorch_lightning\loops\fit_loop.py", line 267, in advance
+    self._outputs = self.epoch_loop.run(self._data_fetcher)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\pytorch_lightning\loops\loop.py", line 199, in run
+    self.advance(*args, **kwargs)
+  File "C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\pytorch_lightning\loops\epoch\training_epoch_loop.py", line 187, in advance
+    batch = next(data_fetcher)
+            ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\pytorch_lightning\utilities\fetching.py", line 184, in __next__
+    return self.fetching_function()
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\pytorch_lightning\utilities\fetching.py", line 265, in fetching_function
+    self._fetch_next_batch(self.dataloader_iter)
+  File "C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\pytorch_lightning\utilities\fetching.py", line 280, in _fetch_next_batch
+    batch = next(iterator)
+            ^^^^^^^^^^^^^^
+  File "C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\pytorch_lightning\trainer\supporters.py", line 571, in __next__
+    return self.request_next_batch(self.loader_iters)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\pytorch_lightning\trainer\supporters.py", line 583, in request_next_batch
+    return apply_to_collection(loader_iters, Iterator, next)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\lightning_utilities\core\apply_func.py", line 64, in apply_to_collection
+    return function(data, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\torch\utils\data\dataloader.py", line 630, in __next__
+    data = self._next_data()
+           ^^^^^^^^^^^^^^^^^
+  File "C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\torch\utils\data\dataloader.py", line 1344, in _next_data
+    return self._process_data(data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\torch\utils\data\dataloader.py", line 1370, in _process_data
+    data.reraise()
+  File "C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\torch\_utils.py", line 706, in reraise
+    raise exception
+RuntimeError: Caught RuntimeError in DataLoader worker process 0.
+Original Traceback (most recent call last):
+  File "C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\torch\utils\data\_utils\worker.py", line 309, in _worker_loop
+    data = fetcher.fetch(index)  # type: ignore[possibly-undefined]
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\torch\utils\data\_utils\fetch.py", line 55, in fetch
+    return self.collate_fn(data)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\torch\utils\data\_utils\collate.py", line 317, in default_collate
+    return collate(batch, collate_fn_map=default_collate_fn_map)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\torch\utils\data\_utils\collate.py", line 174, in collate
+    return [collate(samples, collate_fn_map=collate_fn_map) for samples in transposed]  # Backwards compatibility.
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\torch\utils\data\_utils\collate.py", line 142, in collate
+    return collate_fn_map[elem_type](batch, collate_fn_map=collate_fn_map)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\aaron.l\miniconda3\envs\seg\Lib\site-packages\torch\utils\data\_utils\collate.py", line 214, in collate_tensor_fn
+    return torch.stack(batch, 0, out=out)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: stack(): functions with out=... arguments don't support automatic differentiation, but one of the arguments requires grad.

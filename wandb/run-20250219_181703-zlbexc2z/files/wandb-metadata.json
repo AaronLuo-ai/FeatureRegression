@@ -1,0 +1,32 @@
+{
+  "os": "Windows-11-10.0.26100-SP0",
+  "python": "3.12.3",
+  "startedAt": "2025-02-20T00:17:03.918818Z",
+  "program": "C:\\Users\\aaron.l\\Documents\\FeatureRegression\\main.py",
+  "codePath": "main.py",
+  "git": {
+    "remote": "https://github.com/AaronLuo-ai/FeatureRegression.git",
+    "commit": "b0025d517e2403e36357ff4c185568d81fc07414"
+  },
+  "email": "aaron.l@wustl.edu",
+  "root": ".",
+  "host": "OULAB-TNIE",
+  "username": "aaron.l",
+  "executable": "C:\\Users\\aaron.l\\miniconda3\\envs\\seg\\python.exe",
+  "codePathLocal": "main.py",
+  "cpu_count": 24,
+  "cpu_count_logical": 32,
+  "disk": {
+    "/": {
+      "total": "1000081453056",
+      "used": "803348971520"
+    }
+  },
+  "memory": {
+    "total": "34088136704"
+  },
+  "cpu": {
+    "count": 24,
+    "countLogical": 32
+  }
+}

@@ -20,9 +20,12 @@ class RegressionDataset(Dataset):
     def __init__(
         self,
         encoder,
-        root_dir="C:\\Users\\aaron.l\\Documents\\nrrd_images_masks_simple",
-        batch_path="C:\\Users\\aaron.l\\Documents\\nrrd_images_masks_simple\\batch.csv",
-        response_dir=r"C:\Users\aaron.l\Documents\db_20241213.xlsx",
+        # root_dir="C:\\Users\\aaron.l\\Documents\\nrrd_images_masks_simple",
+        # batch_path="C:\\Users\\aaron.l\\Documents\\nrrd_images_masks_simple\\batch.csv",
+        # response_dir=r"C:\Users\aaron.l\Documents\db_20241213.xlsx",
+        root_dir = "/Users/luozisheng/Documents/Zhu_lab/nrrd_images_masks_simple",
+        batch_path = "/Users/luozisheng/Documents/Zhu_lab/nrrd_images_masks_simple/batch.csv",
+        response_dir = "/Users/luozisheng/Documents/Zhu_lab/db_20241213.xlsx",
         phase="train",
         transform=None,
     ):

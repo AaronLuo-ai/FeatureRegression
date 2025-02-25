@@ -3,13 +3,14 @@ from pathlib import Path
 import segmentation_models_pytorch as smp
 import pytorch_lightning as pl
 from torch.utils.data import DataLoader
+
+from utils.RegressionLightening import LinearRegression
 from utils.dataloader import RegressionDataset
 from utils.transform import image_transform
 from pytorch_lightning.loggers import WandbLogger
 from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint
 from datetime import datetime
 import torch
-from pl_bolts.models.regression import LinearRegression
 import sys
 from torch.optim.lr_scheduler import ExponentialLR, CosineAnnealingLR
 sys.path.append("..")
@@ -21,11 +22,17 @@ def main():
     print(torch.cuda.is_available())
     print(torch.version.cuda)
 
+    # Lab Compputer
+    # model_path = Path(
+    #     "C:\\Users\\aaron.l\\Documents\\FeatureRegression\\model_param\\encoder.pth"
+    # )
+
+    # Local Computer
     model_path = Path(
-        "C:\\Users\\aaron.l\\Documents\\FeatureRegression\\model_param\\encoder.pth"
-    )
-    model = smp.Unet(encoder_name="resnet34", in_channels=1, classes=1)
-    new_encoder = model.encoder
+            "/Users/luozisheng/Documents/Zhu_lab/FeatureRegression/model_param/encoder.pth"
+        )
+    unet = smp.Unet(encoder_name="resnet34", in_channels=1, classes=1)
+    new_encoder = unet.encoder
     new_encoder.load_state_dict(torch.load(model_path))
     new_encoder.eval()
     customized_encoder = CustomResNet34Encoder(new_encoder)
@@ -35,8 +42,10 @@ def main():
     input_dim = 512
     batch_size = 32
     num_workers = 4
-    max_epochs = 50
+    max_epochs = 20
+    min_epochs = 1
     lr = 1e-4
+    check_val_every_n_epoch=10
 
     # Dataset and Dataloader
     RegressionTransformTrain = image_transform
@@ -64,47 +73,35 @@ def main():
         persistent_workers=True,
     )
 
-    optimizer = torch.optim.SGD(
-        model.parameters(), lr=3e-3, momentum=0.9, weight_decay=0.0001
-    )
-    scheduler = CosineAnnealingLR(optimizer, T_max=100, eta_min=0.01)
-    # Device check
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    print("Current device:", device)
+    # Initialize Model
+    model = LinearRegression(input_dim=input_dim, lr=lr)
 
-    # Initialize Lightning Model
-    regression_model = LinearRegression(input_dim=input_dim)
+    # Initialize Callbacks
+    early_stopping = EarlyStopping(monitor='validation/loss', patience=40, mode='min')
+    checkpoint_callback = ModelCheckpoint(monitor="validation/loss", dirpath="checkpoints/",
+                                          filename="best-checkpoint-{epoch:02d}-{validation/loss:.4f}", save_top_k=1,
+                                          mode="min")
 
-    # Logging with WandB
+    # Initialize WandB Logger
     run_name = f"linear_regression_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}_batch={batch_size}"
-    wandb_logger = WandbLogger(
-        log_model=False, project="MRI-Feature-Regression", name=run_name
-    )
-    wandb_logger.watch(regression_model, log="all", log_freq=100, log_graph=False)
+    wandb_logger = WandbLogger(log_model=False, project="MRI-Feature-Regression", name=run_name)
 
-    # Callbacks
-    # Callbacks (place here before Trainer)
-    # early_stopping = EarlyStopping(monitor="val_loss", patience=10, mode="min")
-
-    # Trainer (pass callbacks here)
+    # Initialize Trainer
     trainer = pl.Trainer(
         logger=wandb_logger,
+        min_epochs=min_epochs,
         max_epochs=max_epochs,
-        # callbacks=[early_stopping],  # Pass callbacks here
-        min_epochs=10,
+        callbacks=[early_stopping, checkpoint_callback],
         num_sanity_val_steps=0,
-        accelerator="gpu" if torch.cuda.is_available() else "cpu",
-        check_val_every_n_epoch=1  # Ensure validation happens every epoch
+        check_val_every_n_epoch=check_val_every_n_epoch
     )
 
-    # Train the model
-    trainer.fit(regression_model, TrainDataLoader, TestDataLoader)
-
-    # Test the model
-    trainer.test(regression_model, TestDataLoader)
+    # Train and Validate
+    trainer.fit(model, TrainDataLoader, TestDataLoader)
+    trainer.validate(model, TestDataLoader)
 
     # Finish WandB
-    wandb_logger.experiment.unwatch(regression_model)
+    wandb_logger.experiment.unwatch(model)
     wandb.finish()
 
 

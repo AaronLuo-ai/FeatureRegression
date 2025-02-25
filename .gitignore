@@ -4,3 +4,4 @@ __pycache__/
 *.log
 MRI-Feature-Regression/
 wandb/
+checkpoints/

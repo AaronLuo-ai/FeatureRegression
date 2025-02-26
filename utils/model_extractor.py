@@ -3,6 +3,11 @@ from pathlib import *
 import segmentation_models_pytorch as smp
 
 
+# =====================================================
+#    Extracting encoder from a Pre-trained U-Net Model
+# =====================================================
+
+
 def main():
     dir_path = Path("C:\\Users\\aaron.l\\Documents\\FeatureRegression\\model_param")
     model_path = dir_path / "unet_trained.pth"

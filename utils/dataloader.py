@@ -2,9 +2,6 @@ import pandas as pd
 import numpy as np
 from pathlib import Path
 import segmentation_models_pytorch as smp
-import torch
-import torch.nn as nn
-import torch.optim as optim
 from torch.utils.data import Dataset
 from torchvision import datasets, transforms
 import nrrd
@@ -20,12 +17,13 @@ class RegressionDataset(Dataset):
     def __init__(
         self,
         encoder,
-        # root_dir="C:\\Users\\aaron.l\\Documents\\nrrd_images_masks_simple",
-        # batch_path="C:\\Users\\aaron.l\\Documents\\nrrd_images_masks_simple\\batch.csv",
-        # response_dir=r"C:\Users\aaron.l\Documents\db_20241213.xlsx",
-        root_dir = "/Users/luozisheng/Documents/Zhu_lab/nrrd_images_masks_simple",
-        batch_path = "/Users/luozisheng/Documents/Zhu_lab/nrrd_images_masks_simple/batch.csv",
-        response_dir = "/Users/luozisheng/Documents/Zhu_lab/db_20241213.xlsx",
+        root_dir="C:\\Users\\aaron.l\\Documents\\nrrd_images_masks_simple",
+        batch_path="C:\\Users\\aaron.l\\Documents\\nrrd_images_masks_simple\\batch.csv",
+        response_dir=r"C:\Users\aaron.l\Documents\db_20241213.xlsx",
+        # This is the address of the data on my own computer (IGNORE THIS)
+        # root_dir = "/Users/luozisheng/Documents/Zhu_lab/nrrd_images_masks_simple",
+        # batch_path = "/Users/luozisheng/Documents/Zhu_lab/nrrd_images_masks_simple/batch.csv",
+        # response_dir = "/Users/luozisheng/Documents/Zhu_lab/db_20241213.xlsx",
         phase="train",
         transform=None,
     ):
@@ -67,7 +65,6 @@ class RegressionDataset(Dataset):
                 )
                 image_path = self.root_dir / image_file
 
-                # Read the NRRD file once
                 image, _ = nrrd.read(image_path)  # Shape: (10, 320, 320)
 
                 # Process each slice and store them individually
@@ -85,18 +82,18 @@ class RegressionDataset(Dataset):
         slice_tensor, response = self.data[index]
         if self.transform:
             slice_tensor = self.transform(slice_tensor)
-        # print("shape of slice tensor: ", slice_tensor.shape)
-        # Features are extracted during DataLoader iteration, not in __init__
         features_tensor = self.encoder(
             slice_tensor.unsqueeze(0)
         )  # Add batch dimension: (1, 1, 128, 128)
         features_tensor = torch.cat([f.view(-1) for f in features_tensor], dim=0)
-        # print("features_tensor.shape: ",features_tensor.shape)
-        # print("features_tensor type: ",type(features_tensor))
         return features_tensor, torch.tensor(response, dtype=torch.float32)
 
     def __len__(self):
         return len(self.data)
+
+    # =================================================
+    #    CODE FOR VISUALIZING / TESTING THE DATALOADER
+    # =================================================
 
 
 def main():

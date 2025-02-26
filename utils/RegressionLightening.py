@@ -1,66 +1,64 @@
 import torch
 import torch.nn as nn
 import pytorch_lightning as pl
-from torchmetrics import R2Score
+from torchmetrics.classification import BinaryAccuracy
 
 
-class LinearRegression(pl.LightningModule):
-    def __init__(self, input_dim=512, lr=1e-3, weight_decay=1e-5, tolerance=0.5):
+class BinaryClassification(pl.LightningModule):
+    def __init__(self, input_dim=512, lr=1e-3, weight_decay=1e-5):
         super().__init__()
         # Define model components
-        self.linear = nn.Linear(input_dim, 1)  # Single output
-        self.loss_fn = nn.MSELoss()            # Mean Squared Error for regression
-        self.r2 = R2Score()                    # R2 Score for regression
-        self.tolerance = tolerance             # Tolerance for accuracy
+        self.linear = nn.Linear(
+            input_dim, 1
+        )  # No sigmoid since BCEWithLogitsLoss handles it
+        self.loss_fn = nn.BCEWithLogitsLoss()  # More stable than BCELoss
+        self.accuracy = BinaryAccuracy()  # Accuracy metric using TorchMetrics
 
         # Save hyperparameters
         self.save_hyperparameters()
         self.lr = lr
 
+    # ==============================
+    #           FORWARD
+    # ==============================
     def forward(self, x):
         return self.linear(x).squeeze()
 
-    # Custom Accuracy Function for Regression
-    def regression_accuracy(self, predictions, targets):
-        return torch.mean((torch.abs(predictions - targets) <= self.tolerance).float())
-
-    # ===================================
-    #             TRAINING STEP
-    # ===================================
+    # ==============================
+    #        TRAINING STEP
+    # ==============================
     def training_step(self, batch, batch_idx):
         loss, scores, y = self._common_step(batch, batch_idx)
-        r2_score = self.r2(scores, y)
-        accuracy = self.regression_accuracy(scores, y)
+        acc = self.accuracy(
+            torch.sigmoid(scores), y.int()
+        )  # Use torch.sigmoid before accuracy
 
-        self.log('train/loss', loss, on_step=False, on_epoch=True, prog_bar=True)
-        self.log('train/r2_score', r2_score, on_step=False, on_epoch=True, prog_bar=True)
-        self.log('train/accuracy', accuracy, on_step=False, on_epoch=True, prog_bar=True)
+        self.log("train/loss", loss, on_step=False, on_epoch=True, prog_bar=True)
+        self.log("train/accuracy", acc, on_step=False, on_epoch=True, prog_bar=True)
         return loss
 
     # ==============================
-    #        VALIDATION STEP
+    #       VALIDATION STEP
     # ==============================
     def validation_step(self, batch, batch_idx):
         loss, scores, y = self._common_step(batch, batch_idx)
-        r2_score = self.r2(scores, y)
-        accuracy = self.regression_accuracy(scores, y)
+        acc = self.accuracy(torch.sigmoid(scores), y.int())
 
-        self.log('validation/loss', loss, on_step=False, on_epoch=True, prog_bar=True)
-        self.log('validation/r2_score', r2_score, on_step=False, on_epoch=True, prog_bar=True)
-        self.log('validation/accuracy', accuracy, on_step=False, on_epoch=True, prog_bar=True)
+        self.log("validation/loss", loss, on_step=False, on_epoch=True, prog_bar=True)
+        self.log(
+            "validation/accuracy", acc, on_step=False, on_epoch=True, prog_bar=True
+        )
         return loss
 
     # ==============================
-    #         TEST STEP
+    #          TEST STEP
     # ==============================
     def test_step(self, batch, batch_idx):
         loss, scores, y = self._common_step(batch, batch_idx)
-        r2_score = self.r2(scores, y)
-        accuracy = self.regression_accuracy(scores, y)
+        acc = self.accuracy(torch.sigmoid(scores), y.int())
 
-        self.log('test/loss', loss, on_step=False, on_epoch=True)
-        self.log('test/r2_score', r2_score, on_step=False, on_epoch=True)
-        self.log('test/accuracy', accuracy, on_step=False, on_epoch=True)
+        self.log("test/loss", loss, on_step=False, on_epoch=True)
+        self.log("test/accuracy", acc, on_step=False, on_epoch=True)
         return loss
 
     # ==============================
@@ -69,7 +67,9 @@ class LinearRegression(pl.LightningModule):
     def _common_step(self, batch, batch_idx):
         x, y = batch
         scores = self.forward(x)
-        loss = self.loss_fn(scores, y)
+        loss = self.loss_fn(
+            scores, y.float()
+        )  # Ensure labels are float for BCEWithLogitsLoss
         return loss, scores, y
 
     # ==============================

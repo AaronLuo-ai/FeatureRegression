@@ -4,13 +4,31 @@ import pytorch_lightning as pl
 from torchmetrics.classification import BinaryAccuracy
 
 
+
+class FCNetwork(nn.Module):
+    def __init__(self, input_size, hidden_sizes, output_size, dropout_rate=0.3):
+        super(FCNetwork, self).__init__()
+        layers = []
+        prev_size = input_size
+        
+        for hidden_size in hidden_sizes:
+            layers.append(nn.Linear(prev_size, hidden_size))
+            layers.append(nn.BatchNorm1d(hidden_size))
+            layers.append(nn.ReLU())
+            layers.append(nn.Dropout(dropout_rate))
+            prev_size = hidden_size
+        
+        layers.append(nn.Linear(prev_size, output_size))
+        self.model = nn.Sequential(*layers)
+
+    def forward(self, x):
+        return self.model(x)
+
 class BinaryClassification(pl.LightningModule):
     def __init__(self, input_dim=512, lr=1e-3, weight_decay=1e-5):
         super().__init__()
         # Define model components
-        self.linear = nn.Linear(
-            input_dim, 1
-        )  # No sigmoid since BCEWithLogitsLoss handles it
+        self.linear = FCNetwork(input_size= 512, hidden_sizes=[256, 128, 64, 32,], output_size= 1)
         self.loss_fn = nn.BCEWithLogitsLoss()  # More stable than BCELoss
         self.accuracy = BinaryAccuracy()  # Accuracy metric using TorchMetrics
 
